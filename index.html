@@ -7,20 +7,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Playfair+Display:wght@400;600&display=swap');
-        
         body {
             font-family: 'Playfair Display', serif;
             overflow-x: hidden;
         }
-        
         .dancing-script {
             font-family: 'Dancing Script', cursive;
         }
-        
         .gradient-bg {
             background: linear-gradient(135deg, #f7dbeb 0%, #f6c5dd 25%, #fb9ac4 50%, #ffcce0 75%, #ffc2d7 100%);
         }
-        
         .floating-hearts {
             position: fixed;
             inset: 0;
@@ -33,11 +29,21 @@
         .emoji-float {
             position: absolute;
             will-change: transform, opacity;
-            font-size: 2.5rem;
+            font-size: clamp(1.2rem, 6vw, 3.5rem); /* responsive */
             opacity: 0.7;
             pointer-events: none;
             filter: drop-shadow(0 2px 8px rgba(255,182,193,0.25));
             animation: emoji-float-move 8s linear infinite;
+            max-width: 12vw;
+            max-height: 12vw;
+            line-height: 1;
+        }
+        @media (max-width: 640px) {
+            .emoji-float {
+                font-size: clamp(1.2rem, 8vw, 2.5rem);
+                max-width: 16vw;
+                max-height: 16vw;
+            }
         }
         @keyframes emoji-float-move {
             0% {
@@ -55,42 +61,44 @@
                 transform: translate(var(--end-x), var(--end-y)) scale(var(--scale)) rotate(var(--rotate));
             }
         }
-        
         .sparkle {
             position: absolute;
             color: #ffd700;
             animation: sparkle 2s ease-in-out infinite;
         }
-        
         @keyframes sparkle {
             0%, 100% { opacity: 0; transform: scale(0.5); }
             50% { opacity: 1; transform: scale(1); }
         }
-        
         .card-entrance {
             animation: cardSlideIn 1.5s ease-out;
         }
-        
         @keyframes cardSlideIn {
             0% { transform: translateY(50px); opacity: 0; }
             100% { transform: translateY(0); opacity: 1; }
         }
-        
         .photo-frame {
             background: linear-gradient(45deg, #fff, #f8f8f8);
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            border: 10px solid #fff;
+            border: clamp(6px, 2vw, 12px) solid #fff;
             position: relative;
-            max-width: 800px; /* увеличено */
-            min-height: 600px; /* увеличено */
+            max-width: 90vw;
+            min-width: 0;
+            min-height: 0;
+            width: 100%;
             aspect-ratio: 4/3;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: transform 0.4s cubic-bezier(.4,2,.6,1);
-            overflow: hidden; /* Добавлено */
         }
-
+        @media (max-width: 640px) {
+            .photo-frame {
+                max-width: 98vw;
+                min-height: 40vw;
+                border-width: 6px;
+            }
+        }
         .photo-frame img, .photo-frame picture, .photo-frame .photo-content {
             width: 100%;
             height: 100%;
@@ -98,13 +106,10 @@
             border-radius: 1.2rem;
             transition: transform 0.4s cubic-bezier(.4,2,.6,1);
         }
-
         .photo-slide.active .photo-frame {
             transform: scale(1.04);
             z-index: 2;
         }
-        
-        
         .photo-frame::before {
             content: '';
             position: absolute;
@@ -116,49 +121,44 @@
             border-radius: inherit;
             z-index: -1;
         }
-        
         .album-container {
             transform: translateY(100vh);
             transition: transform 0.8s ease-in-out;
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            max-height: 100vh;
         }
-        
         .album-container.visible {
             transform: translateY(0);
         }
-        
         .photo-slide {
             opacity: 0;
             transform: translateY(50px);
             transition: all 0.6s ease-in-out;
         }
-        
         .photo-slide.active {
             opacity: 1;
             transform: translateY(0);
         }
-        
         .progress-bar {
             background: linear-gradient(90deg, #ffb6c1, #ffd700, #ffb6c1);
             height: 4px;
             border-radius: 2px;
             transition: width 0.3s ease;
         }
-        
         .final-screen {
             background: radial-gradient(circle at center, #ffe4f1 0%, #ffd6e8 50%, #ffb6c1 100%);
             transform: translateY(100vh);
             transition: transform 0.8s ease-in-out;
         }
-        
         .final-screen.visible {
             transform: translateY(0);
         }
-        
         @keyframes firework {
             0% { transform: scale(0); opacity: 1; }
             100% { transform: scale(1); opacity: 0; }
         }
-        
         .firework {
             position: absolute;
             width: 4px;
@@ -166,19 +166,30 @@
             border-radius: 50%;
             animation: firework 1s ease-out infinite;
         }
-
-        .photo-bg-emoji {
-            position: absolute;
-            opacity: 0;
-            filter: blur(10px);
-            transition: opacity 0.7s cubic-bezier(.4,2,.6,1), filter 0.7s cubic-bezier(.4,2,.6,1), transform 0.7s cubic-bezier(.4,2,.6,1);
-            will-change: opacity, filter, transform;
-            pointer-events: none;
-            user-select: none;
+        /* Responsive main card and text */
+        @media (max-width: 640px) {
+            .card-entrance {
+                padding: 1.5rem !important;
+                max-width: 98vw !important;
+            }
+            .dancing-script {
+                font-size: clamp(1.2rem, 7vw, 2.2rem);
+            }
+            .photo-frame {
+                border-radius: 0.8rem;
+            }
         }
-        .photo-bg-emoji.visible {
-            opacity: 0.7;
-            filter: blur(0);
+        /* Responsive navigation controls */
+        @media (max-width: 640px) {
+            .fixed.bottom-4 {
+                bottom: 0.5rem !important;
+                padding: 0.5rem 0.5rem !important;
+                border-radius: 1.5rem !important;
+            }
+            .flex.space-x-2 > .dot {
+                width: 0.7rem !important;
+                height: 0.7rem !important;
+            }
         }
     </style>
 </head>
@@ -241,16 +252,14 @@
 
         <!-- Центрированная рамка слайдера -->
         <div class="flex-1 flex flex-col items-center justify-center w-full">
-            <div class="photo-frame rounded-2xl overflow-hidden mx-auto my-8 relative max-w-2xl w-full aspect-[4/3]" style="margin-top:-2rem;margin-bottom:1.5rem;">
-                <!-- Контейнер для фоновых смайликов -->
-                <div id="photoBgEmojis" class="absolute inset-0 pointer-events-none z-0"></div>
+            <div class="photo-frame rounded-2xl overflow-hidden mx-auto my-8 relative max-w-2xl w-full aspect-[4/3]" style="margin-top:-2rem;margin-bottom:1.5rem;max-width:90vw;">
                 <!-- Слайды внутри рамки, только активный видим -->
-                <div id="photoSlidesWrapper" class="w-full h-full relative z-10">
+                <div id="photoSlidesWrapper" class="w-full h-full relative">
                     <!-- Слайды будут вставляться скриптом -->
                 </div>
             </div>
             <!-- Подпись к фото -->
-            <div id="photoCaption" class="text-center mt-1 dancing-script text-3xl text-pink-700 min-h-[2.5em]"></div>
+            <div id="photoCaption" class="text-center mt-1 dancing-script text-3xl text-pink-700 min-h-[2.5em] px-2 break-words"></div>
         </div>
 
         <!-- Navigation Controls -->
@@ -355,288 +364,252 @@
             content: `
                 <img src="photos/photo1.jpg" alt="Фото 1" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Самая родная 🌸🤗',
-            bgEmojis: ['🌸','🤗','💕','😊']
+            caption: 'Самая родная 🌸🤗'
         },
         // 2
         {
             content: `
                 <img src="photos/photo2.jpg" alt="Фото 2" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Наша счастливая семья ❤️👨‍👩‍👧‍👧',
-            bgEmojis: ['👨‍👩‍👧‍👧','❤️','😊','💖']
+            caption: 'Наша счастливая семья ❤️👨‍👩‍👧‍👧'
         },
         // 3
         {
             content: `
                 <img src="photos/photo3.jpg" alt="Фото 3" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Время быть собой 💫💁‍♀️',
-            bgEmojis: ['💫','💁‍♀️','✨','😊']
+            caption: 'Время быть собой 💫💁‍♀️'
         },
         // 4
         {
             content: `
                 <img src="photos/photo4.jpg" alt="Фото 4" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Счастье в лицах 😊💞',
-            bgEmojis: ['😊','💞','🌟','🥰']
+            caption: 'Счастье в лицах 😊💞'
         },
         // 5
         {
             content: `
                 <img src="photos/photo5.jpg" alt="Фото 5" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Папа умеет всё 🔧💡',
-            bgEmojis: ['🔧','💡','👨','💪']
+            caption: 'Папа умеет всё 🔧💡'
         },
         // 6
         {
             content: `
                 <img src="photos/photo6.jpg" alt="Фото 6" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Счастливый момент 😊✨',
-            bgEmojis: ['😊','✨','💖','🥰']
+            caption: 'Счастливый момент 😊✨'
         },
         // 7
         {
             content: `
                 <img src="photos/photo7.jpg" alt="Фото 7" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Стиль и красота ✨👠',
-            bgEmojis: ['✨','👠','💅','💖']
+            caption: 'Стиль и красота ✨👠'
         },
         // 8
         {
             content: `
                 <img src="photos/photo8.jpg" alt="Фото 8" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Нежность в каждом взгляде 👀💕',
-            bgEmojis: ['👀','💕','🌸','🥰']
+            caption: 'Нежность в каждом взгляде 👀💕'
         },
         // 9
         {
             content: `
                 <img src="photos/photo9.jpg" alt="Фото 9" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Мамина улыбка — моё счастье 😊💐',
-            bgEmojis: ['😊','💐','🌷','💖']
+            caption: 'Мамина улыбка — моё счастье 😊💐'
         },
         // 10
         {
             content: `
                 <img src="photos/photo10.jpg" alt="Фото 10" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Вместе смех звучит громче 😂👨‍👩‍👧‍👦',
-            bgEmojis: ['😂','👨‍👩‍👧‍👦','😄','🎉']
+            caption: 'Вместе смех звучит громче 😂👨‍👩‍👧‍👦'
         },
         // 11
         {
             content: `
                 <img src="photos/photo11.jpg" alt="Фото 11" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Лёгкость дня 🌤️💞',
-            bgEmojis: ['🌤️','💞','😊','☀️']
+            caption: 'Лёгкость дня 🌤️💞'
         },
         // 12
         {
             content: `
                 <img src="photos/photo12.jpg" alt="Фото 12" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Самые лучшие мама и папа ❤️👩‍❤️‍👨',
-            bgEmojis: ['❤️','👩‍❤️‍👨','😊','💖']
+            caption: 'Самые лучшие мама и папа ❤️👩‍❤️‍👨'
         },
         // 13
         {
             content: `
                 <img src="photos/photo13.jpg" alt="Фото 13" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Опора семьи ⚓❤️',
-            bgEmojis: ['⚓','❤️','🏡','😊']
+            caption: 'Опора семьи ⚓❤️'
         },
         // 14
         {
             content: `
                 <img src="photos/photo14.jpg" alt="Фото 14" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Сильный и добрый 💪🌸',
-            bgEmojis: ['💪','🌸','😊','❤️']
+            caption: 'Сильный и добрый 💪🌸'
         },
         // 15
         {
             content: `
                 <img src="photos/photo15.jpg" alt="Фото 15" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Любовь, проверенная временем ⏳💞',
-            bgEmojis: ['⏳','💞','❤️','😊']
+            caption: 'Любовь, проверенная временем ⏳💞'
         },
         // 16
         {
             content: `
                 <img src="photos/photo16.jpg" alt="Фото 16" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Радость в тарелке 🥗😋',
-            bgEmojis: ['🥗','😋','🍽️','😊']
+            caption: 'Радость в тарелке 🥗😋'
         },
         // 17
         {
             content: `
                 <img src="photos/photo17.jpg" alt="Фото 17" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Лучший повар в нашей семье 👩✨',
-            bgEmojis: ['👩','✨','🍳','😊']
+            caption: 'Лучший повар в нашей семье 👩✨'
         },
         // 18
         {
             content: `
                 <img src="photos/photo18.jpg" alt="Фото 18" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Дом там, где мы рядом 🏡💞',
-            bgEmojis: ['🏡','💞','😊','❤️']
+            caption: 'Дом там, где мы рядом 🏡💞'
         },
         // 19
         {
             content: `
                 <img src="photos/photo19.jpg" alt="Фото 19" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Настроение дня 🌈😁',
-            bgEmojis: ['🌈','😁','☀️','😊']
+            caption: 'Настроение дня 🌈😁'
         },
         // 20
         {
             content: `
                 <img src="photos/photo20.jpg" alt="Фото 20" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Папина гордость 💪👨',
-            bgEmojis: ['💪','👨','😊','❤️']
+            caption: 'Папина гордость 💪👨'
         },
         // 21
         {
             content: `
                 <img src="photos/photo21.jpg" alt="Фото 21" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Папа всегда на высоте 🚀😎',
-            bgEmojis: ['🚀','😎','💪','😊']
+            caption: 'Папа всегда на высоте 🚀😎'
         },
         // 22
         {
             content: `
                 <img src="photos/photo22.jpg" alt="Фото 22" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Обед по расписанию 🍽️🕑',
-            bgEmojis: ['🍽️','🕑','😊','❤️']
+            caption: 'Обед по расписанию 🍽️🕑'
         },
         // 23
         {
             content: `
                 <img src="photos/photo23.jpg" alt="Фото 23" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Главная звезда 🌟❤️',
-            bgEmojis: ['🌟','❤️','😊','🎉']
+            caption: 'Главная звезда 🌟❤️'
         },
         // 24
         {
             content: `
                 <img src="photos/photo24.jpg" alt="Фото 24" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Всегда прекрасна 💐💖',
-            bgEmojis: ['💐','💖','😊','🌸']
+            caption: 'Всегда прекрасна 💐💖'
         },
         // 25
         {
             content: `
                 <img src="photos/photo25.jpg" alt="Фото 25" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Мамина улыбка сияет ✨😊',
-            bgEmojis: ['✨','😊','💖','🌷']
+            caption: 'Мамина улыбка сияет ✨😊'
         },
         // 26
         {
             content: `
                 <img src="photos/photo26.jpg" alt="Фото 26" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Вкус жизни 🌶️🌶️🌶️',
-            bgEmojis: ['🌶️','🌶️','🌶️','😊']
+            caption: 'Вкус жизни 🌶️🌶️🌶️'
         },
         // 27
         {
             content: `
                 <img src="photos/photo27.jpg" alt="Фото 27" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Мой ангел хранитель 👼✨',
-            bgEmojis: ['👼','✨','😊','❤️']
+            caption: 'Мой ангел хранитель 👼✨'
         },
         // 28
         {
             content: `
                 <img src="photos/photo28.jpg" alt="Фото 28" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Лучшее время вместе ⏰😃',
-            bgEmojis: ['⏰','😃','❤️','😊']
+            caption: 'Лучшее время вместе ⏰😃'
         },
         // 29
         {
             content: `
                 <img src="photos/photo29.jpg" alt="Фото 29" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Мои самые родные 👩‍❤️‍👨🌟',
-            bgEmojis: ['👩‍❤️‍👨','🌟','😊','❤️']
+            caption: 'Мои самые родные 👩‍❤️‍👨🌟'
         },
         // 30
         {
             content: `
                 <img src="photos/photo30.jpg" alt="Фото 30" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Мамочка — наша гордость 🌺👩',
-            bgEmojis: ['🌺','👩','😊','❤️']
+            caption: 'Мамочка — наша гордость 🌺👩'
         },
         // 31
         {
             content: `
                 <img src="photos/photo31.jpg" alt="Фото 31" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Все вместе — и это главное 🌟👨‍👩‍👧',
-            bgEmojis: ['🌟','👨‍👩‍👧','😊','❤️']
+            caption: 'Все вместе — и это главное 🌟👨‍👩‍👧'
         },
         // 32
         {
             content: `
                 <img src="photos/photo32.jpg" alt="Фото 32" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Три красавицы и два вина 🍇🍷',
-            bgEmojis: ['🍇','🍷','😊','❤️']
+            caption: 'Три красавицы и два вина 🍇🍷'
         },
         // 33
         {
             content: `
                 <img src="photos/photo33.jpg" alt="Фото 33" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Наша красавица мама 🌸👩',
-            bgEmojis: ['🌸','👩','😊','❤️']
+            caption: 'Наша красавица мама 🌸👩'
         },
         // 34
         {
             content: `
                 <img src="photos/photo34.jpg" alt="Фото 34" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Королева бассейна 👑🏊‍♀️',
-            bgEmojis: ['👑','🏊‍♀️','😊','❤️']
+            caption: 'Королева бассейна 👑🏊‍♀️'
         },
         // 35
         {
             content: `
                 <img src="photos/photo35.jpg" alt="Фото 35" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Даша в кадре 📸🎀',
-            bgEmojis: ['📸','🎀','😊','❤️']
+            caption: 'Даша в кадре 📸🎀'
         },
         // 36
         {
             content: `
                 <img src="photos/photo36.jpg" alt="Фото 36" class="photo-content w-full h-full object-cover rounded-[1.2rem]" />
             `,
-            caption: 'Сердце семьи ❤️🏡',
-            bgEmojis: ['❤️','🏡','😊','🎉']
+            caption: 'Сердце семьи ❤️🏡'
         }
     ];
     const totalPhotos = slidesData.length;
@@ -657,8 +630,6 @@
         document.getElementById('photoCaption').textContent = slidesData[currentPhotoIndex].caption;
         // Подстроить рамку под фото
         adjustPhotoFrameToImage();
-        // ВАЖНО: после подгонки рамки — отрисовать смайлики
-        renderPhotoBgEmojis();
     }
 
     function updatePhotoDisplay() {
@@ -683,8 +654,6 @@
         document.getElementById('progressBar').style.width = progress + '%';
         // Подстроить рамку под фото
         adjustPhotoFrameToImage();
-        // ВАЖНО: после подгонки рамки — отрисовать смайлики
-        renderPhotoBgEmojis();
     }
 
     // Новая функция: подгоняет .photo-frame под размеры текущего фото
@@ -700,20 +669,13 @@
             frame.style.width = '';
             frame.style.height = '';
             frame.style.aspectRatio = '4/3';
-            // После сброса — обновить смайлики
-            renderPhotoBgEmojis();
             return;
         }
         // Если картинка уже загружена
         if (img.complete && img.naturalWidth && img.naturalHeight) {
             setFrameSize(img, frame);
-            // После подгонки — обновить смайлики
-            renderPhotoBgEmojis();
         } else {
-            img.onload = () => {
-                setFrameSize(img, frame);
-                renderPhotoBgEmojis();
-            };
+            img.onload = () => setFrameSize(img, frame);
         }
     }
 
@@ -833,27 +795,39 @@
     // Touch/swipe support
     let touchStartX = 0;
     let touchEndX = 0;
+    let touchStartY = 0;
+    let touchEndY = 0;
 
     document.addEventListener('touchstart', (e) => {
+        if (!isAlbumOpen) return;
         touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
     });
 
     document.addEventListener('touchend', (e) => {
+        if (!isAlbumOpen) return;
         touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
         handleSwipe();
     });
 
     function handleSwipe() {
         if (!isAlbumOpen) return;
-        
         const swipeThreshold = 50;
-        const diff = touchStartX - touchEndX;
-        
-        if (Math.abs(diff) > swipeThreshold) {
-            if (diff > 0) {
-                nextPhoto(); // Swipe left - next photo
+        const diffX = touchStartX - touchEndX;
+        const diffY = touchStartY - touchEndY;
+        // Вертикальный свайп (вниз/вверх)
+        if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > swipeThreshold) {
+            if (diffY > 0) {
+                nextPhoto(); // swipe up - next
             } else {
-                previousPhoto(); // Swipe right - previous photo
+                previousPhoto(); // swipe down - prev
+            }
+        } else if (Math.abs(diffX) > swipeThreshold) {
+            if (diffX > 0) {
+                nextPhoto(); // swipe left - next
+            } else {
+                previousPhoto(); // swipe right - prev
             }
         }
     }
@@ -862,7 +836,8 @@
     const emojiList = [
         "💕", "💖", "💝", "🌸", "🌺", "🎂", "🎉", "🌹", "⭐", "✨", "❤️", "🥰", "😊", "👩‍👧‍👦", "👨‍👩‍👧‍👦"
     ];
-    const emojiCount = 36; // Количество эмодзи на экране
+    // responsive emoji count
+    const emojiCount = window.innerWidth < 640 ? 18 : 36;
     const emojiContainer = document.getElementById('emojiAnimation');
     function randomBetween(a, b) {
         return a + Math.random() * (b - a);
@@ -872,12 +847,12 @@
         emoji.className = 'emoji-float';
         emoji.textContent = emojiList[Math.floor(Math.random() * emojiList.length)];
         // Случайные стартовые и конечные координаты (по всему экрану)
-        const startX = randomBetween(0, 100);
-        const startY = randomBetween(0, 100);
+        const startX = randomBetween(0, 90);
+        const startY = randomBetween(0, 90);
         // Движение по диагонали, вверх, вниз, вбок — случайно
-        const endX = startX + randomBetween(-30, 30);
-        const endY = startY + randomBetween(-40, 40);
-        const scale = randomBetween(1.2, 2.2);
+        const endX = Math.max(0, Math.min(100, startX + randomBetween(-30, 30)));
+        const endY = Math.max(0, Math.min(100, startY + randomBetween(-40, 40)));
+        const scale = randomBetween(window.innerWidth < 640 ? 1 : 1.2, window.innerWidth < 640 ? 1.6 : 2.2);
         const rotate = randomBetween(-60, 60) + 'deg';
         emoji.style.setProperty('--start-x', startX + 'vw');
         emoji.style.setProperty('--start-y', startY + 'vh');
@@ -886,7 +861,6 @@
         emoji.style.setProperty('--scale', scale);
         emoji.style.setProperty('--rotate', rotate);
         emoji.style.animationDuration = randomBetween(7, 12) + 's';
-        emoji.style.fontSize = randomBetween(2.2, 4.2) + 'rem';
         emojiContainer.appendChild(emoji);
         // Перезапуск анимации после завершения
         emoji.addEventListener('animationend', () => {
@@ -899,57 +873,40 @@
         setTimeout(createEmoji, i * 180);
     }
 
-    // --- СТИЛИ ДЛЯ ЭФФЕКТА ПОЯВЛЕНИЯ СМАЙЛИКОВ ---
-    const style = document.createElement('style');
-    style.innerHTML = `
-    .photo-bg-emoji {
-        position: absolute;
-        opacity: 0;
-        filter: blur(10px);
-        transition: opacity 0.7s cubic-bezier(.4,2,.6,1), filter 0.7s cubic-bezier(.4,2,.6,1), transform 0.7s cubic-bezier(.4,2,.6,1);
-        will-change: opacity, filter, transform;
-        pointer-events: none;
-        user-select: none;
-    }
-    .photo-bg-emoji.visible {
-        opacity: 0.7;
-        filter: blur(0);
-    }
-    `;
-    document.head.appendChild(style);
+    document.addEventListener('touchstart', (e) => {
+        if (!isAlbumOpen) return;
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    });
 
-    // --- ФУНКЦИЯ ДЛЯ ОТРИСОВКИ ФОНОВЫХ СМАЙЛИКОВ ---
-    function renderPhotoBgEmojis() {
-        const bgEmojisDiv = document.getElementById('photoBgEmojis');
-        bgEmojisDiv.innerHTML = '';
-        const slide = slidesData[currentPhotoIndex];
-        if (!slide.bgEmojis || !slide.bgEmojis.length) return;
-        // Количество смайликов: 4-8, если мало в массиве — дублируем
-        const count = Math.max(4, Math.min(8, slide.bgEmojis.length + Math.floor(Math.random()*3)));
-        for (let i = 0; i < count; i++) {
-            const emoji = document.createElement('span');
-            emoji.className = 'photo-bg-emoji';
-            // Берём смайлик из массива, если не хватает — по кругу
-            emoji.textContent = slide.bgEmojis[i % slide.bgEmojis.length];
-            // Случайная позиция (оставляем небольшой отступ от краёв)
-            const top = 10 + Math.random() * 70; // %
-            const left = 10 + Math.random() * 70; // %
-            emoji.style.top = top + '%';
-            emoji.style.left = left + '%';
-            // Размер: 2.2rem - 4.5rem
-            const size = (Math.random() * 2.3 + 2.2).toFixed(2) + 'rem';
-            emoji.style.fontSize = size;
-            // Случайный угол поворота
-            emoji.style.transform = `rotate(${Math.random()*60-30}deg)`;
-            bgEmojisDiv.appendChild(emoji);
-            // Плавное появление
-            setTimeout(() => {
-                emoji.classList.add('visible');
-            }, 60 + i*80);
+    document.addEventListener('touchend', (e) => {
+        if (!isAlbumOpen) return;
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        handleSwipe();
+    });
+
+    function handleSwipe() {
+        if (!isAlbumOpen) return;
+        const swipeThreshold = 50;
+        const diffX = touchStartX - touchEndX;
+        const diffY = touchStartY - touchEndY;
+        // Вертикальный свайп (вниз/вверх)
+        if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > swipeThreshold) {
+            if (diffY > 0) {
+                nextPhoto(); // swipe up - next
+            } else {
+                previousPhoto(); // swipe down - prev
+            }
+        } else if (Math.abs(diffX) > swipeThreshold) {
+            if (diffX > 0) {
+                nextPhoto(); // swipe left - next
+            } else {
+                previousPhoto(); // swipe right - prev
+            }
         }
     }
-
-    // --- ПЕРВЫЙ РЕНДЕР ---
+    // Инициализация
     renderSlides();
     updatePhotoDisplay();
     </script>
